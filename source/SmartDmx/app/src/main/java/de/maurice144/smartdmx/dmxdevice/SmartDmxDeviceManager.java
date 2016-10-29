@@ -13,10 +13,11 @@ public class SmartDmxDeviceManager {
     public static final int STATUS_CONNECTED = 2;
     public static final int STATUS_CONNECTIONLOST = 3;
 
-    public static final int FAIL_NO_BT = 0;
-    public static final int FAIL_BT_DISABLED = 1;
-    public static final int FAIL_TIMEOUT = 2;
-    public static final int FAIL_BT_NOT_AVAILABLE = 3;
+    public static final int FAIL_NO_FAIL = 0;
+    public static final int FAIL_NO_BT = 1;
+    public static final int FAIL_BT_DISABLED = 2;
+    public static final int FAIL_TIMEOUT = 3;
+    public static final int FAIL_UNKNOWN = 4;
 
 
 
@@ -24,6 +25,7 @@ public class SmartDmxDeviceManager {
 
     private final BluetoothManager bluetoothManager;
     private SmartDmxDevice device;
+    private SmartDmxDeviceInfo deviceInfo;
     private int status;
     private int failstatus;
 
@@ -38,21 +40,23 @@ public class SmartDmxDeviceManager {
         this.statusHandler = statusHandler;
     }
 
-    private void changeStatus(int status) {
+    private void changeStatus(int status, int failStatus) {
         synchronized (lockObj) {
             this.status = status;
+            this.failstatus = failStatus;
         }
         if(statusHandler != null) {
             statusHandler.onStatusChanged(status);
         }
     }
 
+
     public void connect(SmartDmxDeviceInfo deviceInfo) {
+        this.deviceInfo = deviceInfo;
         try {
             BluetoothConnectionResult connection = bluetoothManager.createConnection(deviceInfo.getMacAddress());
             if(connection.isFailed()) {
-                failstatus = connection.getFailReason();
-                changeStatus(STATUS_CONNECTIONFAILED);
+                changeStatus(STATUS_CONNECTIONFAILED,connection.getFailReason());
                 return;
             }
             synchronized (lockObj) {
@@ -63,11 +67,10 @@ public class SmartDmxDeviceManager {
                     }
                 });
             }
-            changeStatus(STATUS_CONNECTED);
+            changeStatus(STATUS_CONNECTED,FAIL_NO_FAIL);
         } catch (IOException e) {
             e.printStackTrace();
-            changeStatus(STATUS_CONNECTIONFAILED);
-            failstatus = FAIL_BT_NOT_AVAILABLE;
+            changeStatus(STATUS_CONNECTIONFAILED, FAIL_TIMEOUT);
         }
     }
 
@@ -77,7 +80,7 @@ public class SmartDmxDeviceManager {
                 device.close();
                 device = null;
             }
-            changeStatus(STATUS_NOTCONNECTED);
+            changeStatus(STATUS_NOTCONNECTED,FAIL_NO_FAIL);
         } catch (Exception ignored) {
         }
     }
@@ -87,7 +90,7 @@ public class SmartDmxDeviceManager {
             if(!this.device.equals(device)) {
                 return;
             }
-            changeStatus(STATUS_CONNECTIONLOST);
+            changeStatus(STATUS_CONNECTIONLOST,FAIL_NO_FAIL);
         }
     }
 
@@ -101,5 +104,9 @@ public class SmartDmxDeviceManager {
 
     public SmartDmxDevice getDevice() {
         return device;
+    }
+
+    public SmartDmxDeviceInfo getDeviceInfo() {
+        return deviceInfo;
     }
 }

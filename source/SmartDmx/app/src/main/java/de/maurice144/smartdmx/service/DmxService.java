@@ -1,10 +1,12 @@
 package de.maurice144.smartdmx.service;
 
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -62,19 +64,21 @@ public class DmxService extends DmxServiceBase {
 
     private void onConnected() {
         NotificationCompat.Builder builder = createNotification();
-        builder.setContentText(String.format("Connected to %s",deviceManager.getDevice().getInfo().getName()));
+        builder.setContentText(String.format("Connected to %s",deviceManager.getDeviceInfo().getName()));
         startForeground(NOTIFICATION_ID,builder.build());
     }
 
     private void onConnectionLost() {
         NotificationCompat.Builder builder = createNotification();
-        builder.setContentText(String.format("Lost connection to %s",deviceManager.getDevice().getInfo().getName()));
+        builder.setContentText(String.format("Lost connection to %s",deviceManager.getDeviceInfo().getName()));
         startForeground(NOTIFICATION_ID,builder.build());
     }
 
     private void onConnectionFailed() {
         NotificationCompat.Builder builder = createNotification();
-        builder.setContentText(String.format("Connection failed to %s",deviceManager.getDevice().getInfo().getName()));
+        int failstatus = deviceManager.getFailstatus();
+        String failText = getResources().getStringArray(R.array.connection_fail_reasons)[failstatus];
+        builder.setContentText(String.format("Connection to %s failed - %s",deviceManager.getDeviceInfo().getName(),failText));
         startForeground(NOTIFICATION_ID,builder.build());
     }
 
@@ -84,6 +88,8 @@ public class DmxService extends DmxServiceBase {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentIntent(resultPendingIntent);
         builder.setSmallIcon(getNotificationIcon());
+        builder.setPriority(Notification.PRIORITY_HIGH);
+        if (Build.VERSION.SDK_INT >= 21) builder.setVibrate(new long[]{250,250,250,250,250});
         builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.deficon));
         builder.setContentTitle(getString(R.string.app_name));
         return builder;

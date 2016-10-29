@@ -2,4 +2,13 @@
     <string name="app_name">SmartDMX</string>
     <string name="service_name">SmartDMX Service</string>
     <string name="service_description">This service handles bluetooth connection to SmartDMX devices.</string>
+
+    <string-array name="connection_fail_reasons">
+        <item>No Fail</item>
+        <item>No bluetooth at this device</item>
+        <item>The bluetooth is disabled</item>
+        <item>Connection timeout</item>
+        <item>Unknown error</item>
+    </string-array>
+
 </resources>

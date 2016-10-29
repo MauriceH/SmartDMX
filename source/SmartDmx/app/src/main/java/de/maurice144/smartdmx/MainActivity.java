@@ -13,7 +13,7 @@ import de.maurice144.smartdmx.service.message.device.DisconnectDeviceMessage;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = "FRAGDUINO";
+    private static final String LOG_TAG = "MainActivity";
 
     private boolean lampState = false;
 

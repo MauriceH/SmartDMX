@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="MAC Adresse des Bluetooth Devices:" />
+
+    <EditText
+        android:id="@+id/text_adresse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="98:D3:32:70:A2:F2" >
+    </EditText>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/bt_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Verbinden" />
+
+        <Button
+            android:id="@+id/bt_disconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trennen" />
+
+        <Button
+            android:id="@+id/bt_senden"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lamp" />
+
+    </LinearLayout>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
+
+    <View
+        android:id="@+id/field_touch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="30dp"
+        android:background="@android:color/holo_green_dark" />
+
+
+</LinearLayout>
